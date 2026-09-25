@@ -6,17 +6,12 @@ const userRoutes = require("./routes/userRoutes");
 const app = express();
 
 const corsOrigin = process.env.CORS_ORIGIN;
-const allowedOrigins = corsOrigin && corsOrigin !== "*"
-  ? corsOrigin.split(",").map((o) => o.trim())
-  : "*";
-
-app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+if (corsOrigin && corsOrigin !== "*") {
+  const allowedOrigins = corsOrigin.split(",").map((o) => o.trim());
+  app.use(cors({ origin: allowedOrigins }));
+} else {
+  app.use(cors());
+}
 
 app.use(express.json());
 
