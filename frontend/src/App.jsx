@@ -9,55 +9,94 @@ function App() {
     email: "",
     phone: "",
     address: "",
-    age: ""
+    age: "",
   });
 
-  const API = "http://localhost:5000/api/users";
+  const API = "https://test-web-development.onrender.com/api/users";
 
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const createUser = async () => {
-    const response = await fetch(API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        ...form,
-        age: Number(form.age)
-      })
-    });
+    try {
+      const response = await fetch(API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          age: Number(form.age),
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    alert(data.message);
+      if (!response.ok) {
+        alert(data.message || "Failed to create user");
+        return;
+      }
 
-    getUsers();
+      alert(data.message);
+
+      setForm({
+        id: "",
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+        age: "",
+      });
+
+      getUsers();
+    } catch (error) {
+      console.error("Create user error:", error);
+      alert("Unable to connect to the server");
+    }
   };
 
   const getUsers = async () => {
-    const response = await fetch(`${API}/search`);
+    try {
+      const response = await fetch(`${API}/search`);
 
-    const data = await response.json();
+      const data = await response.json();
 
-    setUsers(data.data);
+      if (!response.ok) {
+        alert(data.message || "Failed to get users");
+        return;
+      }
+
+      setUsers(data.data);
+    } catch (error) {
+      console.error("Get users error:", error);
+      alert("Unable to connect to the server");
+    }
   };
 
   const deleteUser = async (id) => {
-    const response = await fetch(`${API}/${id}`, {
-      method: "DELETE"
-    });
+    try {
+      const response = await fetch(`${API}/${id}`, {
+        method: "DELETE",
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    alert(data.message);
+      if (!response.ok) {
+        alert(data.message || "Failed to delete user");
+        return;
+      }
 
-    getUsers();
+      alert(data.message);
+
+      getUsers();
+    } catch (error) {
+      console.error("Delete user error:", error);
+      alert("Unable to connect to the server");
+    }
   };
 
   return (
@@ -67,30 +106,35 @@ function App() {
       <input
         name="id"
         placeholder="ID"
+        value={form.id}
         onChange={handleChange}
       />
 
       <input
         name="name"
         placeholder="Name"
+        value={form.name}
         onChange={handleChange}
       />
 
       <input
         name="email"
         placeholder="Email"
+        value={form.email}
         onChange={handleChange}
       />
 
       <input
         name="phone"
         placeholder="Phone"
+        value={form.phone}
         onChange={handleChange}
       />
 
       <input
         name="address"
         placeholder="Address"
+        value={form.address}
         onChange={handleChange}
       />
 
@@ -98,6 +142,7 @@ function App() {
         name="age"
         placeholder="Age"
         type="number"
+        value={form.age}
         onChange={handleChange}
       />
 
