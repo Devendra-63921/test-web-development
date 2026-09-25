@@ -270,7 +270,6 @@ const updateUser = async (req, res) => {
       updateData.age = age;
     }
 
-    // Update user
     const updatedUser = await User.findOneAndUpdate(
       { id },
       updateData,
